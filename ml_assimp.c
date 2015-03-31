@@ -4,10 +4,40 @@
 #include <caml/memory.h>
 #include <caml/alloc.h>
 #include <caml/bigarray.h>
+#include <caml/custom.h>
+#include <caml/fail.h>
 
 #include <assimp/scene.h>
 #include <assimp/cimport.h>
 #include <assimp/version.h>
+
+static value Val_pair(value a, value b)
+{
+  CAMLparam2(a, b);
+  CAMLlocal1(ret);
+
+  ret = caml_alloc(2, 0);
+  Store_field(ret, 0, a);
+  Store_field(ret, 0, b);
+
+  CAMLreturn(ret);
+}
+
+static value make_ok(value v)
+{
+  CAMLparam1(v);
+  // (Obj.magic `Ok : int)
+  CAMLreturn(Val_pair(Val_int(17724), v));
+}
+
+static value make_error(const char *msg)
+{
+  CAMLparam0();
+  CAMLlocal1(str);
+  str = caml_copy_string(msg);
+  // (Obj.magic `Error : int)
+  CAMLreturn(Val_pair(Val_int(106380200), str));
+}
 
 static value import_floats(float *v, int n)
 {
@@ -32,18 +62,6 @@ static value import_integers(unsigned int *arr, unsigned int len)
   int i;
   for (i = 0; i < len; ++i)
     Store_field(ret, i, Val_int(arr[i]));
-
-  CAMLreturn(ret);
-}
-
-static value Val_pair(value a, value b)
-{
-  CAMLparam2(a, b);
-  CAMLlocal1(ret);
-
-  ret = caml_alloc(2, 0);
-  Store_field(ret, 0, a);
-  Store_field(ret, 0, b);
 
   CAMLreturn(ret);
 }
@@ -393,24 +411,26 @@ value Val_aiBone(struct aiBone *bone)
 value Val_animMesh(struct aiAnimMesh *anim)
 {
   CAMLparam0();
-  CAMLlocal1(ret);
+  CAMLlocal2(ret, tmp);
 
   assert (AI_MAX_NUMBER_OF_COLOR_SETS == 8);
   assert (AI_MAX_NUMBER_OF_TEXTURECOORDS == 8);
-  ret = caml_alloc(4 + 8 * 2, 0);
+  ret = caml_alloc(6, 0);
   Store_field(ret, 0, import_array(aiVector3D, anim->mVertices, anim->mNumVertices));
   Store_field(ret, 1, import_array(aiVector3D, anim->mNormals, anim->mNumVertices));
   Store_field(ret, 2, import_array(aiVector3D, anim->mTangents, anim->mNumVertices));
   Store_field(ret, 3, import_array(aiVector3D, anim->mBitangents, anim->mNumVertices));
 
   int i;
+  tmp = caml_alloc(8, 0);
   for (i = 0; i < 8; ++i)
-    Store_field(ret, 4 + i, import_array(aiColor4D, anim->mColors[i], anim->mNumVertices));
+    Store_field(tmp, i, import_array(aiColor4D, anim->mColors[i], anim->mNumVertices));
+  Store_field(ret, 4, tmp);
 
+  tmp = caml_alloc(8, 0);
   for (i = 0; i < 8; ++i)
-  {
-    Store_field(ret, 4 + 8 + i, import_array(aiVector3D, anim->mTextureCoords[i], anim->mNumVertices));
-  }
+    Store_field(tmp, i, import_array(aiVector3D, anim->mTextureCoords[i], anim->mNumVertices));
+  Store_field(ret, 5, tmp);
 
   CAMLreturn(ret);
 }
@@ -418,12 +438,12 @@ value Val_animMesh(struct aiAnimMesh *anim)
 value Val_aiMesh(struct aiMesh *mesh)
 {
   CAMLparam0();
-  CAMLlocal1(ret);
+  CAMLlocal2(ret, tmp);
 
   assert (AI_MAX_NUMBER_OF_COLOR_SETS == 8);
   assert (AI_MAX_NUMBER_OF_TEXTURECOORDS == 8);
 
-  ret = caml_alloc(5 + 8 * 3 + 4, 0);
+  ret = caml_alloc(13, 0);
   Store_field(ret, 0, Val_aiPrimitiveType(mesh->mPrimitiveTypes));
   Store_field(ret, 1, import_array(aiVector3D, mesh->mVertices, mesh->mNumVertices));
   Store_field(ret, 2, import_array(aiVector3D, mesh->mNormals, mesh->mNumVertices));
@@ -431,20 +451,26 @@ value Val_aiMesh(struct aiMesh *mesh)
   Store_field(ret, 4, import_array(aiVector3D, mesh->mBitangents, mesh->mNumVertices));
 
   int i;
+  tmp = caml_alloc(8, 0);
   for (i = 0; i < 8; ++i)
-    Store_field(ret, 5 + i, import_array(aiColor4D, mesh->mColors[i], mesh->mNumVertices));
+    Store_field(tmp, i, import_array(aiColor4D, mesh->mColors[i], mesh->mNumVertices));
+  Store_field(ret, 5, tmp);
 
+  tmp = caml_alloc(8, 0);
   for (i = 0; i < 8; ++i)
-    Store_field(ret, 5 + 8 + i, import_array(aiVector3D, mesh->mTextureCoords[i], mesh->mNumVertices));
+    Store_field(tmp, i, import_array(aiVector3D, mesh->mTextureCoords[i], mesh->mNumVertices));
+  Store_field(ret, 6, tmp);
 
+  tmp = caml_alloc(8, 0);
   for (i = 0; i < 8; ++i)
-    Store_field(ret, 5 + 8 + 8 + i, Val_int(mesh->mNumUVComponents[i]));
+    Store_field(tmp, i, Val_int(mesh->mNumUVComponents[i]));
+  Store_field(ret, 7, tmp);
 
-  Store_field(ret, 29, import_array(aiFace, mesh->mFaces, mesh->mNumFaces));
-  Store_field(ret, 30, import_arrayp(aiBone, mesh->mBones, mesh->mNumBones));
-  Store_field(ret, 31, Val_int(mesh->mMaterialIndex));
-  Store_field(ret, 32, Val_aiString(&mesh->mName));
-  Store_field(ret, 33, import_arrayp(animMesh, mesh->mAnimMeshes, mesh->mNumAnimMeshes));
+  Store_field(ret, 8, import_array(aiFace, mesh->mFaces, mesh->mNumFaces));
+  Store_field(ret, 9, import_arrayp(aiBone, mesh->mBones, mesh->mNumBones));
+  Store_field(ret, 10, Val_int(mesh->mMaterialIndex));
+  Store_field(ret, 11, Val_aiString(&mesh->mName));
+  Store_field(ret, 12, import_arrayp(animMesh, mesh->mAnimMeshes, mesh->mNumAnimMeshes));
 
   CAMLreturn(ret);
 }
@@ -468,20 +494,17 @@ value Val_aiTexture(struct aiTexture *tex)
     Store_field(record, 1, Val_int(tex->mHeight));
     Store_field(record, 2, hint);
     Store_field(record, 3, ba);
-
     ret = caml_alloc(1, 0);
+    Store_field(ret, 0, record);
   }
   else
   {
     ba = caml_ba_alloc_dims(CAML_BA_UINT8 | CAML_BA_C_LAYOUT, 1, NULL, tex->mWidth);
-    record = caml_alloc(2, 0);
-    Store_field(record, 0, hint);
-    Store_field(record, 1, ba);
-
-    ret = caml_alloc(1, 1);
+    ret = caml_alloc(2, 1);
+    Store_field(ret, 0, hint);
+    Store_field(ret, 1, ba);
   }
 
-  Store_field(ret, 0, record);
   memcpy(Caml_ba_data_val(ba), tex->pcData,
       caml_ba_byte_size(Caml_ba_array_val(ba)));
 
@@ -599,7 +622,7 @@ value Val_aiNode(struct aiNode *node)
   CAMLreturn(ret);
 }
 
-value Val_aiScene(const struct aiScene *scene)
+value Val_scene_of_aiScene(const struct aiScene *scene)
 {
   CAMLparam0();
   CAMLlocal1(ret);
@@ -617,6 +640,68 @@ value Val_aiScene(const struct aiScene *scene)
   CAMLreturn(ret);
 }
 
+/* OCaml interface */
+
+#define aiScene_val(v) (*((struct aiScene **)Data_custom_val(v)))
+
+static void aiScene_finalize(value v)
+{
+  CAMLparam1(v);
+  if (aiScene_val(v))
+  {
+    aiReleaseImport(aiScene_val(v));
+    aiScene_val(v) = NULL;
+  }
+  CAMLreturn0;
+}
+
+static struct custom_operations aiScene_custom_ops = {
+    identifier: "aiScene",
+    finalize:    aiScene_finalize,
+    compare:     custom_compare_default,
+    hash:        custom_hash_default,
+    serialize:   custom_serialize_default,
+    deserialize: custom_deserialize_default
+};
+
+value alloc_aiScene(const struct aiScene *scene)
+{
+  CAMLparam0();
+  CAMLlocal1(ret);
+
+  ret = caml_alloc_custom(&aiScene_custom_ops, sizeof(struct aiScene *), 0, 1);
+  aiScene_val(ret) = (struct aiScene *)scene;
+
+  CAMLreturn(ret);
+}
+
+CAMLprim value ml_aiScene_release(value scene)
+{
+  CAMLparam1(scene);
+
+  if (aiScene_val(scene))
+  {
+    aiReleaseImport(aiScene_val(scene));
+    aiScene_val(scene) = NULL;
+  }
+  else
+    caml_invalid_argument("Assimp.release_scene");
+
+  CAMLreturn(Val_unit);
+}
+
+CAMLprim value ml_aiScene_view(value scene)
+{
+  CAMLparam1(scene);
+  CAMLlocal1(ret);
+
+  if (aiScene_val(scene))
+    ret = Val_scene_of_aiScene(aiScene_val(scene));
+  else
+    caml_invalid_argument("Assimp.release_scene");
+
+  CAMLreturn(ret);
+}
 
 CAMLprim value ml_aiImportFile(value filename, value flags)
 {
@@ -626,13 +711,48 @@ CAMLprim value ml_aiImportFile(value filename, value flags)
   const struct aiScene* scene = aiImportFile(String_val(filename), Int_val(flags));
   if (scene)
   {
-    ret = caml_alloc(1, 0);
-    Store_field(ret, 0, Val_aiScene(scene));
+    ret = make_ok(alloc_aiScene(scene));
     aiReleaseImport(scene);
   }
   else
-    // FIXME: GetErrorString
-    ret = Val_unit;
+    ret = make_error(aiGetErrorString());
+
+  CAMLreturn(ret);
+}
+
+CAMLprim value ml_aiImportFileFromMemory(value ba, value flags, value hint)
+{
+  CAMLparam3(ba, flags, hint);
+  CAMLlocal1(ret);
+
+  const struct aiScene* scene = aiImportFileFromMemory(
+      Caml_ba_data_val(ba), caml_ba_byte_size(Caml_ba_array_val(ba)),
+      Int_val(flags), String_val(hint));
+  if (scene)
+  {
+    ret = make_ok(alloc_aiScene(scene));
+    aiReleaseImport(scene);
+  }
+  else
+    ret = make_error(aiGetErrorString());
+
+  CAMLreturn(ret);
+}
+
+CAMLprim value ml_aiApplyPostProcessing(value scene, value flags)
+{
+  CAMLparam1(scene);
+  CAMLlocal1(ret);
+
+  if (aiScene_val(scene))
+  {
+    if (aiApplyPostProcessing(aiScene_val(scene), Int_val(flags)))
+      ret = Val_int(1);
+    else
+      ret = Val_int(0);
+  }
+  else
+    caml_invalid_argument("Assimp.release_scene");
 
   CAMLreturn(ret);
 }
