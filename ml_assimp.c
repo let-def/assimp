@@ -18,7 +18,7 @@ static value Val_pair(value a, value b)
 
   ret = caml_alloc(2, 0);
   Store_field(ret, 0, a);
-  Store_field(ret, 0, b);
+  Store_field(ret, 1, b);
 
   CAMLreturn(ret);
 }
@@ -710,10 +710,7 @@ CAMLprim value ml_aiImportFile(value filename, value flags)
 
   const struct aiScene* scene = aiImportFile(String_val(filename), Int_val(flags));
   if (scene)
-  {
     ret = make_ok(alloc_aiScene(scene));
-    aiReleaseImport(scene);
-  }
   else
     ret = make_error(aiGetErrorString());
 
@@ -729,10 +726,7 @@ CAMLprim value ml_aiImportFileFromMemory(value ba, value flags, value hint)
       Caml_ba_data_val(ba), caml_ba_byte_size(Caml_ba_array_val(ba)),
       Int_val(flags), String_val(hint));
   if (scene)
-  {
     ret = make_ok(alloc_aiScene(scene));
-    aiReleaseImport(scene);
-  }
   else
     ret = make_error(aiGetErrorString());
 

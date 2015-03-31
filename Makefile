@@ -20,6 +20,7 @@ assimp.cma: assimp.cmo dll_assimp_stubs.so
 	ocamlc -a -custom -o $@ $< \
 	       -ccopt -L/usr/local/lib \
 	       -dllib dll_assimp_stubs.so \
+	       -dllib libassimp.so \
 	       -cclib -l_assimp_stubs \
 				 -cclib -lassimp
 
