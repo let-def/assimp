@@ -121,47 +121,47 @@ static value import_arrayp(value (*f)(void *), void **start, size_t n)
 
 /* Basic types */
 
-value Val_aiColor3D(struct aiColor3D *color)
+static value Val_aiColor3D(struct aiColor3D *color)
 {
   return import_floats(&color->r, 3);
 }
 
-value Val_aiColor4D(struct aiColor4D *color)
+static value Val_aiColor4D(struct aiColor4D *color)
 {
   return import_floats(&color->r, 4);
 }
 
-value Val_aiVector2D(struct aiVector2D *v)
+static value Val_aiVector2D(struct aiVector2D *v)
 {
   return import_floats(&v->x, 2);
 }
 
-value Val_aiVector3D(struct aiVector3D *v)
+static value Val_aiVector3D(struct aiVector3D *v)
 {
   return import_floats(&v->x, 3);
 }
 
-value Val_aiQuaternion(struct aiQuaternion *q)
+static value Val_aiQuaternion(struct aiQuaternion *q)
 {
   return import_floats(&q->w, 4);
 }
 
-value Val_aiMatrix3x3(struct aiMatrix3x3 *m)
+static value Val_aiMatrix3x3(struct aiMatrix3x3 *m)
 {
   return import_floats(&m->a1, 9);
 }
 
-value Val_aiMatrix4x4(struct aiMatrix4x4 *m)
+static value Val_aiMatrix4x4(struct aiMatrix4x4 *m)
 {
   return import_floats(&m->a1, 16);
 }
 
-value Val_aiPlane(struct aiPlane *plane)
+static value Val_aiPlane(struct aiPlane *plane)
 {
   return import_floats(&plane->a, 4);
 }
 
-value Val_aiRay(struct aiRay *ray)
+static value Val_aiRay(struct aiRay *ray)
 {
   return Val_pair(Val_aiVector3D(&ray->pos), Val_aiVector3D(&ray->dir));
 }
@@ -177,12 +177,12 @@ static value caml_import_string(void *data, size_t n)
   CAMLreturn(ret);
 }
 
-value Val_aiString(struct aiString *string)
+static value Val_aiString(struct aiString *string)
 {
   return caml_import_string(&string->data[0], string->length);
 }
 
-value Val_aiMemoryInfo(struct aiMemoryInfo *info)
+static value Val_aiMemoryInfo(struct aiMemoryInfo *info)
 {
   CAMLparam0();
   CAMLlocal1(ret);
@@ -214,24 +214,24 @@ static value import_key(double mTime, value payload)
   CAMLreturn(ret);
 }
 
-value Val_aiVectorKey(struct aiVectorKey* x)
+static value Val_aiVectorKey(struct aiVectorKey* x)
 {
   return import_key(x->mTime, Val_aiVector3D(&x->mValue));
 }
 
-value Val_aiQuatKey(struct aiQuatKey* x)
+static value Val_aiQuatKey(struct aiQuatKey* x)
 {
   return import_key(x->mTime, Val_aiQuaternion(&x->mValue));
 }
 
-value Val_aiMeshKey(struct aiMeshKey* x)
+static value Val_aiMeshKey(struct aiMeshKey* x)
 {
   return import_key(x->mTime, Val_int(x->mValue));
 }
 
 #define Val_aiAnimBehaviour Val_int
 
-value Val_aiNodeAnim(struct aiNodeAnim *anim)
+static value Val_aiNodeAnim(struct aiNodeAnim *anim)
 {
   CAMLparam0();
   CAMLlocal1(ret);
@@ -247,7 +247,7 @@ value Val_aiNodeAnim(struct aiNodeAnim *anim)
   CAMLreturn(ret);
 }
 
-value Val_aiMeshAnim(struct aiMeshAnim *anim)
+static value Val_aiMeshAnim(struct aiMeshAnim *anim)
 {
   CAMLparam0();
   CAMLlocal1(ret);
@@ -259,7 +259,7 @@ value Val_aiMeshAnim(struct aiMeshAnim *anim)
   CAMLreturn(ret);
 }
 
-value Val_aiAnimation(struct aiAnimation *anim)
+static value Val_aiAnimation(struct aiAnimation *anim)
 {
   CAMLparam0();
   CAMLlocal1(ret);
@@ -276,7 +276,7 @@ value Val_aiAnimation(struct aiAnimation *anim)
 
 /* Camera */
 
-value Val_aiCamera(struct aiCamera *cam)
+static value Val_aiCamera(struct aiCamera *cam)
 {
   CAMLparam0();
   CAMLlocal1(ret);
@@ -300,7 +300,7 @@ value Val_aiCamera(struct aiCamera *cam)
 
 #define Val_aiLightSourceType Val_int
 
-value Val_aiLight(struct aiLight *light)
+static value Val_aiLight(struct aiLight *light)
 {
   CAMLparam0();
   CAMLlocal1(ret);
@@ -337,7 +337,7 @@ value Val_aiLight(struct aiLight *light)
 #define Val_aiTextureFlags Val_int
 #define Val_aiBlendMode Val_int
 
-value Val_aiUVTransform(struct aiUVTransform *trans)
+static value Val_aiUVTransform(struct aiUVTransform *trans)
 {
   CAMLparam0();
   CAMLlocal1(ret);
@@ -353,7 +353,7 @@ value Val_aiUVTransform(struct aiUVTransform *trans)
 
 #define Val_aiPropertyTypeInfo Val_int
 
-value Val_aiMaterialProperty(struct aiMaterialProperty *mat)
+static value Val_aiMaterialProperty(struct aiMaterialProperty *mat)
 {
   CAMLparam0();
   CAMLlocal1(ret);
@@ -369,19 +369,19 @@ value Val_aiMaterialProperty(struct aiMaterialProperty *mat)
   CAMLreturn(ret);
 }
 
-value Val_aiMaterial(struct aiMaterial *mat)
+static value Val_aiMaterial(struct aiMaterial *mat)
 {
   return import_arrayp(aiMaterialProperty, mat->mProperties, mat->mNumProperties);
 }
 
 /* Mesh */
 
-value Val_aiFace(struct aiFace *face)
+static value Val_aiFace(struct aiFace *face)
 {
   return import_integers(face->mIndices, face->mNumIndices);
 }
 
-value Val_aiVertexWeight(struct aiVertexWeight *weight)
+static value Val_aiVertexWeight(struct aiVertexWeight *weight)
 {
   CAMLparam0();
   CAMLlocal1(ret);
@@ -393,7 +393,7 @@ value Val_aiVertexWeight(struct aiVertexWeight *weight)
   CAMLreturn(ret);
 }
 
-value Val_aiBone(struct aiBone *bone)
+static value Val_aiBone(struct aiBone *bone)
 {
   CAMLparam0();
   CAMLlocal1(ret);
@@ -408,7 +408,7 @@ value Val_aiBone(struct aiBone *bone)
 
 #define Val_aiPrimitiveType Val_int
 
-value Val_animMesh(struct aiAnimMesh *anim)
+static value Val_animMesh(struct aiAnimMesh *anim)
 {
   CAMLparam0();
   CAMLlocal2(ret, tmp);
@@ -435,7 +435,7 @@ value Val_animMesh(struct aiAnimMesh *anim)
   CAMLreturn(ret);
 }
 
-value Val_aiMesh(struct aiMesh *mesh)
+static value Val_aiMesh(struct aiMesh *mesh)
 {
   CAMLparam0();
   CAMLlocal2(ret, tmp);
@@ -477,7 +477,7 @@ value Val_aiMesh(struct aiMesh *mesh)
 
 /* Texture */
 
-value Val_aiTexture(struct aiTexture *tex)
+static value Val_aiTexture(struct aiTexture *tex)
 {
   CAMLparam0();
   CAMLlocal4(ret, hint, record, ba);
@@ -540,7 +540,7 @@ CAMLprim value ml_aiGetCompileFlags(value unit)
 
 /* Metadata */
 
-value Val_aiMetadataEntry(struct aiMetadataEntry *entry)
+static value Val_aiMetadataEntry(struct aiMetadataEntry *entry)
 {
   CAMLparam0();
   CAMLlocal1(ret);
@@ -583,7 +583,7 @@ value Val_aiMetadataEntry(struct aiMetadataEntry *entry)
   CAMLreturn(ret);
 }
 
-value Val_aiMetadata(struct aiMetadata *mdata)
+static value Val_aiMetadata(struct aiMetadata *mdata)
 {
   CAMLparam0();
   CAMLlocal4(ret, v0, v1, empty);
@@ -608,7 +608,7 @@ value Val_aiMetadata(struct aiMetadata *mdata)
 
 /* Scene */
 
-value Val_aiNode(struct aiNode *node)
+static value Val_aiNode(struct aiNode *node)
 {
   CAMLparam0();
   CAMLlocal1(ret);
@@ -622,7 +622,7 @@ value Val_aiNode(struct aiNode *node)
   CAMLreturn(ret);
 }
 
-value Val_scene_of_aiScene(const struct aiScene *scene)
+static value Val_scene_of_aiScene(const struct aiScene *scene)
 {
   CAMLparam0();
   CAMLlocal1(ret);
@@ -664,7 +664,7 @@ static struct custom_operations aiScene_custom_ops = {
     deserialize: custom_deserialize_default
 };
 
-value alloc_aiScene(const struct aiScene *scene)
+static value alloc_aiScene(const struct aiScene *scene)
 {
   CAMLparam0();
   CAMLlocal1(ret);
