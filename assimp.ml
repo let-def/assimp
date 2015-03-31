@@ -28,7 +28,17 @@ type node = {
   node_meshes: int array;
 }
 
+type anim_behaviour = int
+let anim_behaviour_default  = 0
+let anim_behaviour_constant = 1
+let anim_behaviour_linear   = 2
+let anim_behaviour_repeat   = 3
+
 type primitive_type = int
+let primitive_type_POINT    = 1
+let primitive_type_LINE     = 2
+let primitive_type_TRIANGLE = 4
+let primitive_type_POLYGON  = 8
 
 type anim_mesh = {
   anim_mesh_vertices: vec3 array;
@@ -68,6 +78,69 @@ type mesh = {
 }
 
 type property_type_info = int
+let pti_float   = 1
+let pti_string  = 3
+let pti_integer = 4
+let pti_buffer  = 5
+
+type texture_op = int
+let texture_op_multiply   = 0
+let texture_op_add        = 1
+let texture_op_subtract   = 2
+let texture_op_divide     = 3
+let texture_op_smooth_add = 4
+let texture_op_signed_add = 5
+
+type texture_map_mode = int
+let texture_map_mode_wrap   = 0
+let texture_map_mode_clamp  = 1
+let texture_map_mode_decal  = 3
+let texture_map_mode_mirror = 2
+
+type texture_mapping_mode = int
+let texture_mapping_uv       = 0
+let texture_mapping_sphere   = 1
+let texture_mapping_cylinder = 2
+let texture_mapping_box      = 3
+let texture_mapping_plane    = 4
+let texture_mapping_other    = 5
+
+type texture_type = int
+let texture_type_none         = 0
+let texture_type_diffuse      = 1
+let texture_type_specular     = 2
+let texture_type_ambient      = 3
+let texture_type_emissive     = 4
+let texture_type_height       = 5
+let texture_type_normals      = 6
+let texture_type_shininess    = 7
+let texture_type_opacity      = 8
+let texture_type_displacement = 9
+let texture_type_lightmap     = 10
+let texture_type_reflection   = 11
+let texture_type_unknown      = 12
+
+type shading_mode = int
+let shading_mode_flat          = 1
+let shading_mode_gouraud       = 2
+let shading_mode_phong         = 3
+let shading_mode_blinn         = 4
+let shading_mode_toon          = 5
+let shading_mode_oren_nayar    = 6
+let shading_mode_minnaert      = 7
+let shading_mode_cook_torrance = 8
+let shading_mode_no_shading    = 9
+let shading_mode_fresnel       = 10
+
+type texture_flags = int
+let texture_flags_invert = 1
+let texture_flags_use_alpha = 2
+let texture_flags_ignore_alpha = 4
+
+type blend_mode = int
+let blend_mode_default = 0
+let blend_mode_additive = 1
+
 
 type material_property = {
   prop_key: string;
@@ -120,6 +193,10 @@ type texture =
   | Raw of hint * buffer
 
 type light_source_type = int
+let light_source_type_UNDEFINED   = 0
+let light_source_type_DIRECTIONAL = 1
+let light_source_type_POINT       = 2
+let light_source_type_SPOT        = 3
 
 type light = {
   light_name: string;

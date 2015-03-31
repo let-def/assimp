@@ -28,7 +28,17 @@ type node = {
   node_meshes: int array;
 }
 
+type anim_behaviour = int
+val anim_behaviour_default  : int
+val anim_behaviour_constant : int
+val anim_behaviour_linear   : int
+val anim_behaviour_repeat   : int
+
 type primitive_type = int
+val primitive_type_POINT    : int
+val primitive_type_LINE     : int
+val primitive_type_TRIANGLE : int
+val primitive_type_POLYGON  : int
 
 type anim_mesh = {
   anim_mesh_vertices: vec3 array;
@@ -68,6 +78,68 @@ type mesh = {
 }
 
 type property_type_info = int
+val pti_float   : int
+val pti_string  : int
+val pti_integer : int
+val pti_buffer  : int
+
+type texture_op = int
+val texture_op_multiply   : int
+val texture_op_add        : int
+val texture_op_subtract   : int
+val texture_op_divide     : int
+val texture_op_smooth_add : int
+val texture_op_signed_add : int
+
+type texture_map_mode = int
+val texture_map_mode_wrap   : int
+val texture_map_mode_clamp  : int
+val texture_map_mode_decal  : int
+val texture_map_mode_mirror : int
+
+type texture_mapping_mode = int
+val texture_mapping_uv       : int
+val texture_mapping_sphere   : int
+val texture_mapping_cylinder : int
+val texture_mapping_box      : int
+val texture_mapping_plane    : int
+val texture_mapping_other    : int
+
+type texture_type = int
+val texture_type_none         : int
+val texture_type_diffuse      : int
+val texture_type_specular     : int
+val texture_type_ambient      : int
+val texture_type_emissive     : int
+val texture_type_height       : int
+val texture_type_normals      : int
+val texture_type_shininess    : int
+val texture_type_opacity      : int
+val texture_type_displacement : int
+val texture_type_lightmap     : int
+val texture_type_reflection   : int
+val texture_type_unknown      : int
+
+type shading_mode = int
+val shading_mode_flat          : int
+val shading_mode_gouraud       : int
+val shading_mode_phong         : int
+val shading_mode_blinn         : int
+val shading_mode_toon          : int
+val shading_mode_oren_nayar    : int
+val shading_mode_minnaert      : int
+val shading_mode_cook_torrance : int
+val shading_mode_no_shading    : int
+val shading_mode_fresnel       : int
+
+type texture_flags = int
+val texture_flags_invert : int
+val texture_flags_use_alpha : int
+val texture_flags_ignore_alpha : int
+
+type blend_mode = int
+val blend_mode_default : int
+val blend_mode_additive : int
 
 type material_property = {
   prop_key: string;
@@ -119,6 +191,10 @@ type texture =
   | Raw of hint * buffer
 
 type light_source_type = int
+val light_source_type_UNDEFINED   : int
+val light_source_type_DIRECTIONAL : int
+val light_source_type_POINT       : int
+val light_source_type_SPOT        : int
 
 type light = {
   light_name: string;
