@@ -131,10 +131,10 @@ static value Val_aiColor4D(struct aiColor4D *color)
   return import_floats(&color->r, 4);
 }
 
-static value Val_aiVector2D(struct aiVector2D *v)
+/*static value Val_aiVector2D(struct aiVector2D *v)
 {
   return import_floats(&v->x, 2);
-}
+}*/
 
 static value Val_aiVector3D(struct aiVector3D *v)
 {
@@ -146,25 +146,25 @@ static value Val_aiQuaternion(struct aiQuaternion *q)
   return import_floats(&q->w, 4);
 }
 
-static value Val_aiMatrix3x3(struct aiMatrix3x3 *m)
+/*static value Val_aiMatrix3x3(struct aiMatrix3x3 *m)
 {
   return import_floats(&m->a1, 9);
-}
+}*/
 
 static value Val_aiMatrix4x4(struct aiMatrix4x4 *m)
 {
   return import_floats(&m->a1, 16);
 }
 
-static value Val_aiPlane(struct aiPlane *plane)
+/*static value Val_aiPlane(struct aiPlane *plane)
 {
   return import_floats(&plane->a, 4);
-}
+}*/
 
-static value Val_aiRay(struct aiRay *ray)
+/*static value Val_aiRay(struct aiRay *ray)
 {
   return Val_pair(Val_aiVector3D(&ray->pos), Val_aiVector3D(&ray->dir));
-}
+}*/
 
 static value caml_import_string(void *data, size_t n)
 {
@@ -182,7 +182,7 @@ static value Val_aiString(struct aiString *string)
   return caml_import_string(&string->data[0], string->length);
 }
 
-static value Val_aiMemoryInfo(struct aiMemoryInfo *info)
+/*static value Val_aiMemoryInfo(struct aiMemoryInfo *info)
 {
   CAMLparam0();
   CAMLlocal1(ret);
@@ -198,7 +198,7 @@ static value Val_aiMemoryInfo(struct aiMemoryInfo *info)
   Store_field(ret, 7, Val_int(info->total));
 
   CAMLreturn(ret);
-}
+}*/
 
 /* Animation */
 
@@ -337,7 +337,7 @@ static value Val_aiLight(struct aiLight *light)
 #define Val_aiTextureFlags Val_int
 #define Val_aiBlendMode Val_int
 
-static value Val_aiUVTransform(struct aiUVTransform *trans)
+/*static value Val_aiUVTransform(struct aiUVTransform *trans)
 {
   CAMLparam0();
   CAMLlocal1(ret);
@@ -349,7 +349,7 @@ static value Val_aiUVTransform(struct aiUVTransform *trans)
   Store_field(ret, 2, caml_copy_double(trans->mRotation));
 
   CAMLreturn(ret);
-}
+}*/
 
 #define Val_aiPropertyTypeInfo Val_int
 
@@ -540,7 +540,7 @@ CAMLprim value ml_aiGetCompileFlags(value unit)
 
 /* Metadata */
 
-static value Val_aiMetadataEntry(struct aiMetadataEntry *entry)
+/*static value Val_aiMetadataEntry(struct aiMetadataEntry *entry)
 {
   CAMLparam0();
   CAMLlocal1(ret);
@@ -600,7 +600,7 @@ static value Val_aiMetadata(struct aiMetadata *mdata)
   }
 
   CAMLreturn(ret);
-}
+}*/
 
 /* Postprocess */
 

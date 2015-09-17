@@ -9,7 +9,7 @@ external get_compile_flags : unit -> int = "ml_aiGetCompileFlags"
 type raw_scene
 type 'a result = [ `Ok of 'a | `Error of string ]
 external import_file : string -> int -> raw_scene result = "ml_aiImportFile"
-external import_memory : _ Bigarray.Array1.t -> int -> string -> raw_scene result = "ml_aiImportFileFromMemory"
+external import_memory : (_,_,_) Bigarray.Array1.t -> int -> string -> raw_scene result = "ml_aiImportFileFromMemory"
 external release_scene : raw_scene -> unit = "ml_aiScene_release"
 external postprocess_scene : raw_scene -> int -> unit = "ml_aiApplyPostProcessing"
 

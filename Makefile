@@ -1,6 +1,6 @@
 all: assimp.cma assimp.cmxa
 
-CFLAGS=-Og -ggdb -std=gnu99 -ffast-math
+CFLAGS=-std=gnu99 -ffast-math
 ml_assimp.o: ml_assimp.c
 	ocamlc -c -ccopt "$(CFLAGS)" $<
 
@@ -33,9 +33,9 @@ assimp.cmxa assimp.a: assimp.cmx dll_assimp_stubs.so
 				-ccopt "$(CFLAGS)" \
 				-cclib -lassimp
 
-.PHONY: clean-doc clean clean-mlpp run-opt-demo test install
+.PHONY: clean install
 
-clean: clean-doc clean-mlpp
+clean:
 	rm -f *.[oa] *.so *.cm[ixoa] *.cmxa
 
 DIST_FILES=              \
@@ -45,6 +45,8 @@ DIST_FILES=              \
 	assimp.cma          \
 	assimp.cmx          \
 	assimp.cmxa         \
+	assimp.ml           \
+	assimp.mli          \
 	lib_assimp_stubs.a  \
 	dll_assimp_stubs.so
 

@@ -1,5 +1,5 @@
 name="assimp"
-version="0.01"
+version="0.1"
 description="Bindings to assimp, 3d asset importer"
 archive(byte)="assimp.cma"
 archive(native)="assimp.cmxa"

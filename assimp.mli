@@ -49,7 +49,7 @@ type raw_scene
 val import_file : string -> int -> raw_scene result
 
 (** Reads the given file from a given memory buffer. -- aiImportFileFromMemory *)
-val import_memory : _ Bigarray.Array1.t -> int -> string -> raw_scene result
+val import_memory : (_,_,_) Bigarray.Array1.t -> int -> string -> raw_scene result
 
 (** Releases all resources associated with the given import process. -- aiReleaseImport *)
 val release_scene : raw_scene -> unit
@@ -153,13 +153,13 @@ type vertex_weight = {
 type bone = {
 
   (** The name of the bone. *)
-  bone_name: string;                 
+  bone_name: string;
 
   (** The vertices affected by this bone. *)
-  bone_weights: vertex_weight array; 
+  bone_weights: vertex_weight array;
 
   (** Matrix that transforms from mesh space to bone space in bind pose. *)
-  bone_offset: mat4;                 
+  bone_offset: mat4;
 
 }
 
@@ -297,7 +297,7 @@ type node_anim = {
 
   (** The name of the node affected by this animation. *)
   nanim_name: string;
-  
+
   (** The position keys of this animation channel. *)
   nanim_positions: vec3 key array;
 
@@ -449,7 +449,7 @@ type camera = {
 
 (** The root structure of the imported data. -- scene.h aiScene *)
 type scene = {
- 
+
   (** Any combination of the AI_SCENE_FLAGS_XXX flags. *)
   scene_flags: int;
 
