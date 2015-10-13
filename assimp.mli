@@ -41,20 +41,20 @@ val get_compile_flags : unit -> int
 
 (** There are two types for representing Assimp's scenes.
     [raw_scene] is opaque and managed on C-side.
-    After processing such scene with assimp functions, you can turn it to a
+    After processing it with assimp functions, you can turn it to a
     [scene], which is a plain OCaml value. *)
 type raw_scene
 
-(** Reads the given file and returns its content. -- aiImportFile *)
+(** Reads scene from a file. -- aiImportFile *)
 val import_file : string -> int -> raw_scene result
 
-(** Reads the given file from a given memory buffer. -- aiImportFileFromMemory *)
+(** Reads scene from a memory buffer. -- aiImportFileFromMemory *)
 val import_memory : (_,_,_) Bigarray.Array1.t -> int -> string -> raw_scene result
 
-(** Releases all resources associated with the given import process. -- aiReleaseImport *)
+(** Releases all resources associated with a scene. -- aiReleaseImport *)
 val release_scene : raw_scene -> unit
 
-(** Apply post-processing to an already-imported scene. -- aiApplyPostProcessing *)
+(** Apply post-processing to a scene. -- aiApplyPostProcessing *)
 val postprocess_scene : raw_scene -> int -> unit
 
 
