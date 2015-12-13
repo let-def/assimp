@@ -1,8 +1,11 @@
 all: assimp.cma assimp.cmxa
 
+OCAMLC=ocamlfind c
+OCAMLOPT=ocamlfind opt
+
 CFLAGS=-std=gnu99 -ffast-math
 ml_assimp.o: ml_assimp.c
-	ocamlc -c -ccopt "$(CFLAGS)" $<
+	$(OCAMLC) -c -ccopt "$(CFLAGS)" $<
 
 dll_assimp_stubs.so lib_assimp_stubs.a: ml_assimp.o
 	ocamlmklib \
@@ -11,13 +14,13 @@ dll_assimp_stubs.so lib_assimp_stubs.a: ml_assimp.o
 			-cclib -lassimp
 
 assimp.cmi: assimp.mli
-	ocamlc -c $<
+	$(OCAMLC) -package result -c $<
 
 assimp.cmo: assimp.ml assimp.cmi
-	ocamlc -c $<
+	$(OCAMLC) -package result -c $<
 
 assimp.cma: assimp.cmo dll_assimp_stubs.so
-	ocamlc -a -custom -o $@ $< \
+	$(OCAMLC) -package result -a -custom -o $@ $< \
 	       -ccopt -L/usr/local/lib \
 	       -dllib dll_assimp_stubs.so \
 	       -dllib libassimp.so \
@@ -25,10 +28,10 @@ assimp.cma: assimp.cmo dll_assimp_stubs.so
 				 -cclib -lassimp
 
 assimp.cmx: assimp.ml assimp.cmi
-	ocamlopt -c $<
+	$(OCAMLOPT) -package result -c $<
 
 assimp.cmxa assimp.a: assimp.cmx dll_assimp_stubs.so
-	ocamlopt -a -o $@ $< \
+	$(OCAMLOPT) -package result -a -o $@ $< \
 	      -cclib -l_assimp_stubs \
 				-ccopt "$(CFLAGS)" \
 				-cclib -lassimp

@@ -1,5 +1,6 @@
 name="assimp"
 version="0.1"
 description="Bindings to assimp, 3d asset importer"
+requires="result"
 archive(byte)="assimp.cma"
 archive(native)="assimp.cmxa"

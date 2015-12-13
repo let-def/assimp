@@ -16,7 +16,7 @@
 *)
 open Bigarray
 
-type 'a result = [ `Ok of 'a | `Error of string ]
+type 'a result = ('a, [`Msg of string]) Result.result
 
 (******************************************)
 (** {1 Version informations -- version.h} *)

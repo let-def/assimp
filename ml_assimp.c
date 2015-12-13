@@ -26,17 +26,27 @@ static value Val_pair(value a, value b)
 static value make_ok(value v)
 {
   CAMLparam1(v);
-  // (Obj.magic `Ok : int)
-  CAMLreturn(Val_pair(Val_int(17724), v));
+  CAMLlocal1(res);
+
+  res = caml_alloc(1, 0);
+  /* Result.Ok v */
+  Store_field(res, 0, v);
+
+  CAMLreturn(res);
 }
 
 static value make_error(const char *msg)
 {
   CAMLparam0();
-  CAMLlocal1(str);
-  str = caml_copy_string(msg);
-  // (Obj.magic `Error : int)
-  CAMLreturn(Val_pair(Val_int(106380200), str));
+  CAMLlocal1(res);
+
+  /* Result.Error _ */
+  res = caml_alloc(1, 1);
+
+  /* `Msg "str' */
+  Store_field(res, 0, Val_pair(Val_int(3854881), caml_copy_string(msg)));
+
+  CAMLreturn(res);
 }
 
 static value import_floats(float *v, int n)
