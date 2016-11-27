@@ -1,17 +1,20 @@
-all: assimp.cma assimp.cmxa
-
 OCAMLC=ocamlfind c
 OCAMLOPT=ocamlfind opt
+OCAMLMKLIB=ocamlfind mklib
+
+EXT_DLL=$(shell $(OCAMLC) -config | grep ext_dll | cut -f 2 -d ' ')
+EXT_LIB=$(shell $(OCAMLC) -config | grep ext_lib | cut -f 2 -d ' ')
+EXT_OBJ=$(shell $(OCAMLC) -config | grep ext_obj | cut -f 2 -d ' ')
 
 CFLAGS=-std=gnu99 -ffast-math
-ml_assimp.o: ml_assimp.c
+
+all: assimp.cma assimp.cmxa
+
+ml_assimp$(EXT_OBJ): ml_assimp.c
 	$(OCAMLC) -c -ccopt "$(CFLAGS)" $<
 
-dll_assimp_stubs.so lib_assimp_stubs.a: ml_assimp.o
-	ocamlmklib \
-	    -o _assimp_stubs $< \
-			-ccopt "$(CFLAGS)" \
-			-cclib -lassimp
+dll_assimp_stubs$(EXT_DLL) lib_assimp_stubs$(EXT_LIB): ml_assimp$(EXT_OBJ)
+	$(OCAMLMKLIB) -o _assimp_stubs $< -cclib -lassimp
 
 assimp.cmi: assimp.mli
 	$(OCAMLC) -package result -c $<
@@ -19,30 +22,25 @@ assimp.cmi: assimp.mli
 assimp.cmo: assimp.ml assimp.cmi
 	$(OCAMLC) -package result -c $<
 
-assimp.cma: assimp.cmo dll_assimp_stubs.so
+assimp.cma: assimp.cmo dll_assimp_stubs$(EXT_DLL)
 	$(OCAMLC) -package result -a -custom -o $@ $< \
-	       -ccopt -L/usr/local/lib \
-	       -dllib dll_assimp_stubs.so \
-	       -dllib libassimp.so \
-	       -cclib -l_assimp_stubs \
-				 -cclib -lassimp
+	       -dllib dll_assimp_stubs$(EXT_DLL) -dllib libassimp$(EXT_DLL) \
+	       -ccopt -L/usr/local/lib -cclib -l_assimp_stubs -cclib -lassimp
 
 assimp.cmx: assimp.ml assimp.cmi
 	$(OCAMLOPT) -package result -c $<
 
-assimp.cmxa assimp.a: assimp.cmx dll_assimp_stubs.so
+assimp.cmxa assimp$(EXT_LIB): assimp.cmx dll_assimp_stubs$(EXT_DLL)
 	$(OCAMLOPT) -package result -a -o $@ $< \
-	      -cclib -l_assimp_stubs \
-				-ccopt "$(CFLAGS)" \
-				-cclib -lassimp
+	       -cclib -l_assimp_stubs -cclib -lassimp
 
 .PHONY: clean install
 
 clean:
-	rm -f *.[oa] *.so *.cm[ixoa] *.cmxa
+	rm -f *$(EXT_LIB) *$(EXT_OBJ) *$(EXT_DLL) *.cm[ixoa] *.cmxa
 
-DIST_FILES=              \
-	assimp.a            \
+DIST_FILES=           \
+	assimp$(EXT_LIB)    \
 	assimp.cmi          \
 	assimp.cmo          \
 	assimp.cma          \
@@ -50,8 +48,8 @@ DIST_FILES=              \
 	assimp.cmxa         \
 	assimp.ml           \
 	assimp.mli          \
-	lib_assimp_stubs.a  \
-	dll_assimp_stubs.so
+	lib_assimp_stubs$(EXT_LIB)  \
+	dll_assimp_stubs$(EXT_DLL)
 
 install: $(DIST_FILES) META
 	ocamlfind install assimp $^
