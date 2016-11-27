@@ -666,12 +666,12 @@ static void aiScene_finalize(value v)
 }
 
 static struct custom_operations aiScene_custom_ops = {
-    identifier: "aiScene",
-    finalize:    aiScene_finalize,
-    compare:     custom_compare_default,
-    hash:        custom_hash_default,
-    serialize:   custom_serialize_default,
-    deserialize: custom_deserialize_default
+  .identifier  = "aiScene",
+  .finalize    = aiScene_finalize,
+  .compare     = custom_compare_default,
+  .hash        = custom_hash_default,
+  .serialize   = custom_serialize_default,
+  .deserialize = custom_deserialize_default
 };
 
 static value alloc_aiScene(const struct aiScene *scene)
