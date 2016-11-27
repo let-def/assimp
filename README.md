@@ -13,6 +13,9 @@ $ make install
 
 ## CHANGELOG
 
+Version 0.3, Sun Nov 27 20:25:49 CET 2016
+  Increase Makefile portability
+
 Version 0.2, Sun Dec 13 15:39:01 CET 2015
   Make use of result package
 
