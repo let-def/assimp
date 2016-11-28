@@ -7,7 +7,7 @@
   You should have received a copy of the CC0 legalcode along with this
   work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-  Website: https://github.com/def-lkb/assimp
+  Website: https://github.com/let-def/assimp
   Assimp "Open Asset Import Library" is released as Open Source under the terms
   of a 3-clause BSD license.
   http://assimp.sourceforge.net/
